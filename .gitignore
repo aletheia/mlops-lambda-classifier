@@ -4,7 +4,12 @@ __pycache__
 .pytest_cache
 .env
 *.egg-info
+.venv
+.mlops
+package/
 
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+.venv/
+.mlops/

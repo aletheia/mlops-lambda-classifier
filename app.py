@@ -2,7 +2,7 @@
 
 from aws_cdk import core
 
-from stacks.mlops_lambda import MlopsLambdaClassifierStack
+from stacks.mlops_lambda_stack import MlopsLambdaClassifierStack
 
 
 app = core.App()

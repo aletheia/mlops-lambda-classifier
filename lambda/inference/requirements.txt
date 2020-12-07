@@ -1,1 +1,25 @@
--e .
+appdirs==1.4.4
+attrs==20.3.0
+autopep8==1.5.4
+cattrs==1.1.2
+certifi==2020.11.8
+constructs==3.2.60
+distlib==0.3.1
+filelock==3.0.12
+joblib==0.17.0
+jsii==1.15.0
+numpy==1.19.4
+pandas==1.1.4
+pipenv==2020.11.15
+publication==0.0.3
+pycodestyle==2.6.0
+python-dateutil==2.8.1
+pytz==2020.4
+scikit-learn==0.23.2
+scipy==1.5.4
+six==1.15.0
+threadpoolctl==2.1.0
+toml==0.10.1
+typing-extensions==3.7.4.3
+virtualenv==20.2.1
+virtualenv-clone==0.5.4

@@ -1,6 +1,6 @@
 import os
 from aws_cdk import core
-from aws_cdk.aws_lambda import Runtime, Function, Code
+from aws_cdk.aws_lambda import Runtime, Function, Code, DockerImageFunction, DockerImageCode
 from aws_cdk.aws_apigateway import RestApi, LambdaIntegration, MockIntegration, PassthroughBehavior
 
 
@@ -9,12 +9,22 @@ class MlopsLambdaClassifierStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        inferenceFunction = Function(self, "MLOpsClassificationInferenceFunction",
-                                           code=Code.asset(
-                                               os.path.join(os.getcwd(), "./lambda/inference")),
-                                           handler="index.handler",
-                                           runtime=Runtime.PYTHON_3_8
+        # inferenceFunction = Function(self, "MLOpsClassificationInferenceFunction",
+        #                                    code=Code.asset(
+        #                                        os.path.join(os.getcwd(), "./lambda/inference")),
+        #                                    handler="index.handler",
+        #                                    runtime=Runtime.PYTHON_3_8
+        #                              )
+
+        inferenceFunction = DockerImageFunction(self, "MLOpsClassificationInferenceFunction",
+                                           code=DockerImageCode.from_image_asset(
+                                               os.path.join(os.getcwd(), 
+                                               "./lambda/inference")
+                                               ),
+                                           memory_size=512,
+                                           timeout= core.Duration.seconds(30)
                                      )
+
 
         base_api = RestApi(self, "MLOpsRestApi")
 

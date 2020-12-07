@@ -1,58 +1,47 @@
+# MLOps with Container support for AWS Lambda
+This project is a showcase to demonstrate how the recently added [Container support for AWS Lamnda](https://aws.amazon.com/it/blogs/aws/new-for-aws-lambda-container-image-support/), introduced at re:Invent 2020 can be a game changer and open new possibilities.
 
-# Welcome to your CDK Python project!
+## Container support for AWS Lambda
+At re:Invent 2020, AWS announced a long-awaited update for AWS Lambda by many developers and data scientists because it could change the way we build functions. It comes with bonus features that make this release something very welcome in the serverless world: starting from today it is possible to package a lambda function starting from an OCI file format.
+The best part is that a custom Dockerfile could either extend a lambda base image, provided by AWS for any supported runtime and published on DockerHub, or start from a fresh Alpine or Debian image, thus customizing Linux dependencies, packages, and everything we usually do with a dockerized app container.
+This has some serious implications for people willing to use AWS Lambda to serve the machine learning model.
+Moreover a new announced feature of container image support for AWS Lambda is the image size limit of 10GB. This means a lot to us: all the libraries required by a machine learning stack and even the weights of the model can now be packaged and published to a docker registry
 
-This is a blank project for Python development with CDK.
+More info about container support for AWS Lambda can be found:
+* in the [AWS Blog launch post](https://aws.amazon.com/it/blogs/aws/new-for-aws-lambda-container-image-support/)
+* in [this article](https://towardsdatascience.com/serverless-comes-to-machine-learning-with-container-image-support-in-aws-lambda-ee9d729d48d7)
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## About this use case
+This repository has the goal to show how a machine learning model can be packaged and deployed to AWS Lambda with no effort. We choose to focus on a common problem in Customer Experience: customer churn. We used a dataset publicly [available on Kaggle](https://www.kaggle.com/sakshigoyal7/credit-card-customers) to train our machine learning model with scikit-learn on tabular data. For our use case, we leveraged an already implemented **DecisionTree** as shown in a [couple of examples on kaggle](https://www.kaggle.com/sakshigoyal7/credit-card-customers/notebooks).
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+A Jupyter Notebook with the implemented training model and its evaluation (using F1 score) can be found in **notebooks** folder. A raw python version of this trained model, without feature encoding (since encoded feature don't correlate with attrition) is available in **src/training**. A sample request to the deployed model can be run from **api/inference.http** after code deploy.
 
-To manually create a virtualenv on MacOS and Linux:
+## Getting started
+Starting using this repo is as easy as just checkout and deploy
 
-```
-$ python3 -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
-```
-
-If you are a Windows platform, you would activate the virtualenv like this:
-
-```
-% .venv\Scripts\activate.bat
+```bash
+git clone https://github.com/aletheia/mlops-lambda-classifier.git
+cd mlops-lambda-classifier
 ```
 
-Once the virtualenv is activated, you can install the required dependencies.
+Then we have to choose the preferred deployment method: bash script or AWS CDK.
 
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
+### Bash script deployment
+Assuming the AWS CLI is configured with your credentials:
+```bash
+cd script
+./create-function.sh
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+To update the function code after changes to **lambda/inference** code:
 
-## Useful commands
+```bash
+./update-function
+```
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+### Function deployment with AWS CDK
+Here we use the [released Container support in AWS CDK](https://github.com/aws/aws-cdk/issues/11809) support, released since v1.76
+Assuming the AWS CLI is configured with your credentials, the deploy is pretty straightforward, just like any standart AWS CDK deploy:
+```bash
+cdk deploy
+```

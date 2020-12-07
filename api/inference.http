@@ -1,4 +1,4 @@
-POST https://cd2m4pev56.execute-api.eu-west-1.amazonaws.com/prod/classifier
+POST https://<YOUR_API_GATEWAY_DOMAIN>.amazonaws.com/prod/classifier
 Content-Type: application/json
 
 {
